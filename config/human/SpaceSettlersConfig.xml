@@ -31,6 +31,10 @@
 		     to the configuration file for that team.  Also, teams can have initial bounding boxes
 		     which bound where the ships and the base will be created. -->
 		<HighLevelTeamConfig>
+			<teamName>Myrrh's Team</teamName>
+			<configFile>spacesettlersinit.xml</configFile>
+		</HighLevelTeamConfig>
+		<HighLevelTeamConfig>
 			<teamName>CoreCollectorTeam</teamName>
 			<configFile>core-clientinit.xml</configFile>
 		</HighLevelTeamConfig>
@@ -51,6 +55,9 @@
 
 	<!-- Each team needs a base.  Optionally, you can initialize the location of the base -->
 	<bases>
+		<BaseConfig>
+			<teamName>Myrrh's Team</teamName>
+		</BaseConfig>
 		<BaseConfig>
 			<teamName>CoreCollectorTeam</teamName>
 		</BaseConfig>
