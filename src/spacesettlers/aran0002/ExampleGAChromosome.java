@@ -41,14 +41,14 @@ public class ExampleGAChromosome {
 					{
 						Base ourBase = base;
 						policy.put(currentState, new MoveToObjectAction(space, myShip.getPosition(), ourBase));
-						System.out.println("Going for home base");
+						//System.out.println("Going for home base");
 					}
 				}
 				//policy.put(currentState, new DoNothingAction());
 			} else {
 				//System.out.println("Moving to nearestMineable Asteroid " + myShip.getPosition() + " nearest " + currentState.getNearestMineableAsteroid().getPosition());
 				policy.put(currentState, new MoveToObjectAction(space, myShip.getPosition(), currentState.getNearestMineableAsteroid()));
-				System.out.println("Going for asteroid");
+				//System.out.println("Going for asteroid");
 			}
 		}
 

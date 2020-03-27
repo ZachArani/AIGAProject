@@ -80,6 +80,7 @@
 			<classpath>
 				<pathelement location="${dist}/spacesettlers.jar"/>
 			</classpath>
+			<jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5900"/>
 		</java>
 	</target>
 	

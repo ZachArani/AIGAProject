@@ -11,14 +11,12 @@ import java.util.UUID;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 
-import spacesettlers.actions.AbstractAction;
-import spacesettlers.actions.DoNothingAction;
-import spacesettlers.actions.PurchaseCosts;
-import spacesettlers.actions.PurchaseTypes;
+import spacesettlers.actions.*;
 import spacesettlers.clients.TeamClient;
 import spacesettlers.graphics.SpacewarGraphics;
 import spacesettlers.objects.AbstractActionableObject;
 import spacesettlers.objects.AbstractObject;
+import spacesettlers.objects.Base;
 import spacesettlers.objects.Ship;
 import spacesettlers.objects.powerups.SpaceSettlersPowerupEnum;
 import spacesettlers.objects.resources.ResourcePile;
@@ -56,7 +54,10 @@ public class ExampleGAClient extends TeamClient {
 	 * Current step
 	 */
 	private int steps = 0;
-	
+
+	HashMap <UUID, Boolean> aimingForBase;
+
+
 	@Override
 	public Map<UUID, AbstractAction> getMovementStart(Toroidal2DPhysics space,
 			Set<AbstractActionableObject> actionableObjects) {
@@ -69,15 +70,34 @@ public class ExampleGAClient extends TeamClient {
 		for (AbstractObject actionable :  actionableObjects) {
 			if (actionable instanceof Ship) {
 				Ship ship = (Ship) actionable;
-
-				AbstractAction action;
-				
-				if (ship.getCurrentAction() == null || ship.getCurrentAction().isMovementFinished(space)) {
+				AbstractAction action = null;
+				if (ship.getCurrentAction() == null || ship.getCurrentAction().isMovementFinished(space)) //If we're not doing anything
+				{
 					ExampleGAState currentState = new ExampleGAState(space, ship);
-					action = currentPolicy.getCurrentAction(space, ship, currentState, random);
-					System.out.println("New random action is " + action);
-				} else {
-					action = ship.getCurrentAction();
+					action = currentPolicy.getCurrentAction(space, ship, currentState, random); //Consult chromosome for a new action
+					if(action instanceof MoveToObjectAction && ((MoveToObjectAction) action).getGoalObject() instanceof Base) //If we're now going for a base
+						aimingForBase.put(ship.getId(), true);
+					System.out.println("Finished asteroid collection. New action is " + action);
+				}
+				else if(ship.getCurrentAction() instanceof MoveToObjectAction && ((MoveToObjectAction) ship.getCurrentAction()).getGoalObject() instanceof Base)
+				{
+					Base base = (Base) ((MoveToObjectAction) ship.getCurrentAction()).getGoalObject();
+					if(ship.getResources().getTotal() == 0 && ship.getEnergy() > 2000 && aimingForBase.containsKey(ship.getId()) && aimingForBase.get(ship.getId()) && space.findShortestDistance(ship.getPosition(), base.getPosition()) < ship.getRadius() + base.getRadius()) // Did we just touch base?
+					{
+						aimingForBase.put(ship.getId(), false); //We've reached the base
+						ExampleGAState currentState = new ExampleGAState(space, ship);
+						action = currentPolicy.getCurrentAction(space, ship, currentState, random); //Consult chromosome for action
+						System.out.println("Finished returning to base. New action is " + action);
+						if(action instanceof MoveToObjectAction && ((MoveToObjectAction) action).getGoalObject() instanceof Base) //If we're aiming for base again
+							aimingForBase.put(ship.getId(), true);
+					}
+					else
+					{
+						action = ship.getCurrentAction(); //Keep on doing whatever we're currently doing
+					}
+				}
+				else {
+					action = ship.getCurrentAction(); //Keep on keepin' on
 				}
 				actions.put(ship.getId(), action);
 			} else {
@@ -151,6 +171,7 @@ public class ExampleGAClient extends TeamClient {
 		}
 
 		currentPolicy = population.getFirstMember();
+		aimingForBase = new HashMap<UUID, Boolean>();
 	}
 
 	@Override
