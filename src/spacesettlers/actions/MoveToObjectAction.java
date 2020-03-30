@@ -80,9 +80,10 @@ public class MoveToObjectAction extends MoveAction {
 		// goal object moved
 		if (!newGoalObj.getPosition().equalsLocationOnly(originalGoalLocation)) {
 			//System.out.println("Goal object moved");
+
 			return true;
 		}
-		
+
 		return false;
 	}
 	

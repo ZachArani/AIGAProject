@@ -56,6 +56,7 @@ public class Asteroid extends AbstractObject {
 		
 		// reset the mass based on the created resources
 		super.setMass(MIN_ASTEROID_MASS + resources.getMass());
+
 	}
 
     /**

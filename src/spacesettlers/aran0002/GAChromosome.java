@@ -2,9 +2,9 @@ package spacesettlers.aran0002;
 
 import java.util.HashMap;
 import java.util.Random;
+import java.util.UUID;
 
 import spacesettlers.actions.AbstractAction;
-import spacesettlers.actions.DoNothingAction;
 import spacesettlers.actions.MoveToObjectAction;
 import spacesettlers.objects.Base;
 import spacesettlers.objects.Ship;
@@ -16,11 +16,19 @@ import spacesettlers.simulator.Toroidal2DPhysics;
  * @author amy
  *
  */
-public class ExampleGAChromosome {
-	private HashMap<ExampleGAState, AbstractAction> policy;
+public class GAChromosome {
+	private HashMap<GAState, GAMoveTo> policy;
+	int currentScore;
 	
-	public ExampleGAChromosome() {
-		policy = new HashMap<ExampleGAState, AbstractAction>();
+	public GAChromosome() {
+		policy = new HashMap<GAState, GAMoveTo>();
+		currentScore = 0;
+	}
+
+	public GAChromosome(HashMap<GAState, GAMoveTo> policy)
+	{
+		this.policy = policy;
+		currentScore = 0;
 	}
 
 	/**
@@ -29,7 +37,7 @@ public class ExampleGAChromosome {
 	 * @param currentState
 	 * @return
 	 */
-	public AbstractAction getCurrentAction(Toroidal2DPhysics space, Ship myShip, ExampleGAState currentState, Random rand) {
+	public AbstractAction getCurrentAction(Toroidal2DPhysics space, Ship myShip, GAState currentState, Random rand, HashMap<UUID, UUID> shipToAsteroid) {
 		if (!policy.containsKey(currentState)) {
 			// randomly chose to either return to base or go to the nearest
 			// asteroid.  Note this needs to be changed in a real agent as it won't learn 
@@ -40,21 +48,34 @@ public class ExampleGAChromosome {
 					if(base.getTeamName().equals("Myrrh's Team"))
 					{
 						Base ourBase = base;
-						policy.put(currentState, new MoveToObjectAction(space, myShip.getPosition(), ourBase));
+						policy.put(currentState, new GAMoveTo(ourBase.getClass()));
 						//System.out.println("Going for home base");
 					}
 				}
 				//policy.put(currentState, new DoNothingAction());
 			} else {
 				//System.out.println("Moving to nearestMineable Asteroid " + myShip.getPosition() + " nearest " + currentState.getNearestMineableAsteroid().getPosition());
-				policy.put(currentState, new MoveToObjectAction(space, myShip.getPosition(), currentState.getNearestMineableAsteroid()));
+				policy.put(currentState, new GAMoveTo(currentState.getNearestMineableAsteroid().getClass()));
+				shipToAsteroid.put(myShip.getId(),currentState.getNearestMineableAsteroid().getId()); //Keep track of ship heading towards asteroid
+
 				//System.out.println("Going for asteroid");
 			}
 		}
-
-		return policy.get(currentState);
+		currentScore = currentState.getCurrentScore();
+		return policy.get(currentState).generateMovement(currentState, myShip, space);
 
 	}
-	
-	
+
+	public int getCurrentScore() {
+		return currentScore;
+	}
+
+	public void setPolicy(HashMap<GAState, GAMoveTo> policy) {
+		this.policy = policy;
+	}
+
+	public HashMap<GAState, GAMoveTo> getPolicy()
+	{
+		return policy;
+	}
 }
