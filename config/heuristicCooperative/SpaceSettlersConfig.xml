@@ -5,7 +5,7 @@
 	<width>1600</width>
 	
 	<!-- Number of steps of simulation -->
-	<simulationSteps>20000</simulationSteps>
+	<simulationSteps>300000</simulationSteps>
 
 	<!-- Timestep for a simulation (in seconds for the physics equations) -->
 	<simulationTimeStep>0.05</simulationTimeStep>
@@ -46,6 +46,11 @@
 			<teamName>HeuristicMinerTeam</teamName>
 			<!-- Pick the one you intend to play against (self versus other) -->
 			<configFile>passive-heuristic-clientinit.xml</configFile>
+		</HighLevelTeamConfig>
+		<HighLevelTeamConfig>
+			<teamName>Myrrh's Team</teamName>
+			<!-- Pick the one you intend to play against (self versus other) -->
+			<configFile>ga-clientinit.xml</configFile>
 		</HighLevelTeamConfig>
 	</teams>
 

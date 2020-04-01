@@ -5,8 +5,10 @@ import java.util.Random;
 import java.util.UUID;
 
 import spacesettlers.actions.AbstractAction;
-import spacesettlers.actions.MoveToObjectAction;
+import spacesettlers.clients.ImmutableTeamInfo;
+import spacesettlers.objects.Asteroid;
 import spacesettlers.objects.Base;
+import spacesettlers.objects.Beacon;
 import spacesettlers.objects.Ship;
 import spacesettlers.simulator.Toroidal2DPhysics;
 
@@ -31,42 +33,56 @@ public class GAChromosome {
 		currentScore = 0;
 	}
 
+	public void setCurrentScore(int currentScore) {
+		this.currentScore = currentScore;
+	}
+
 	/**
 	 * Returns either the action currently specified by the policy or randomly selects one if this is a new state
 	 * 
 	 * @param currentState
 	 * @return
 	 */
-	public AbstractAction getCurrentAction(Toroidal2DPhysics space, Ship myShip, GAState currentState, Random rand, HashMap<UUID, UUID> shipToAsteroid) {
+	public AbstractAction getCurrentAction(Toroidal2DPhysics space, Ship myShip, GAState currentState, Random rand, HashMap<UUID, UUID> shipToAsteroid, HashMap<UUID,UUID> shipToBeacon) {
 		if (!policy.containsKey(currentState)) {
-			// randomly chose to either return to base or go to the nearest
-			// asteroid.  Note this needs to be changed in a real agent as it won't learn 
-			// much here!
-			if (rand.nextBoolean()) {
-				for(Base base : space.getBases())
-				{
-					if(base.getTeamName().equals("Myrrh's Team"))
-					{
-						Base ourBase = base;
-						policy.put(currentState, new GAMoveTo(ourBase.getClass()));
-						//System.out.println("Going for home base");
-					}
-				}
-				//policy.put(currentState, new DoNothingAction());
-			} else {
+			// randomly chose to: Return to base, head towards the nearest (non-moving) asteroid, or head to the nearest Beacon
+			int decider = rand.nextInt(3);
+			if (decider==0) { //Head for base
+
+				policy.put(currentState, new GAMoveTo(Base.class));
+				//System.out.println("Going for home base");
+			}
+			else if (decider==1){ //Head for asteroid
 				//System.out.println("Moving to nearestMineable Asteroid " + myShip.getPosition() + " nearest " + currentState.getNearestMineableAsteroid().getPosition());
-				policy.put(currentState, new GAMoveTo(currentState.getNearestMineableAsteroid().getClass()));
+				policy.put(currentState, new GAMoveTo(Asteroid.class));
 				shipToAsteroid.put(myShip.getId(),currentState.getNearestMineableAsteroid().getId()); //Keep track of ship heading towards asteroid
 
 				//System.out.println("Going for asteroid");
 			}
+			else //Head for beacon
+			{
+				policy.put(currentState, new GAMoveTo(Beacon.class));
+				shipToBeacon.put(myShip.getId(), currentState.getNearestBeacon().getId());
+				//System.out.println("Going for Beacon");
+			}
 		}
-		currentScore = currentState.getCurrentScore();
 		return policy.get(currentState).generateMovement(currentState, myShip, space);
 
 	}
 
-	public int getCurrentScore() {
+	//Get whatever our team's score is right now.
+	public int getCurrentGameScore(Toroidal2DPhysics space) {
+		for(ImmutableTeamInfo teamInfo : space.getTeamInfo())
+		{
+			if(teamInfo.getTeamName().equals("Myrrh's Team"))
+				return (int)teamInfo.getScore();
+		}
+		return -1; //God have mercy upon your soul
+	}
+
+	public void incCurrentScore(int amount) {currentScore += amount;}
+
+	public int getCurrentScore(){
 		return currentScore;
 	}
 

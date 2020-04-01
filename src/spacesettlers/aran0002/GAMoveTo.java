@@ -32,6 +32,10 @@ public class GAMoveTo {
         {
             return new MoveToObjectAction(space, ship.getPosition(), state.getNearestMineableAsteroid()); //get moving
         }
+        else if(moveTo.equals(Beacon.class)) //If we're moving towards a beacon
+        {
+            return new MoveToObjectAction(space, ship.getPosition(), state.getNearestBeacon());
+        }
 
         return null; //God have mercy upon your soul.
 

@@ -1,15 +1,10 @@
 package spacesettlers.aran0002;
 
-import spacesettlers.actions.AbstractAction;
-import spacesettlers.actions.MoveToObjectAction;
-import spacesettlers.clients.examples.ExampleGAChromosome;
 import spacesettlers.objects.Asteroid;
 import spacesettlers.objects.Base;
 import spacesettlers.simulator.Toroidal2DPhysics;
-import spacesettlers.utilities.Position;
 
 import java.util.*;
-import java.util.stream.IntStream;
 
 import static java.util.Collections.shuffle;
 
@@ -21,10 +16,12 @@ import static java.util.Collections.shuffle;
  */
 public class GAPopulation {
 	private GAChromosome[] population;
-	
+
 	private int currentPopulationCounter;
 	
 	private double[] fitnessScores;
+
+	private StringBuilder bestPerformers;
 
 	/**
 	 * Make a new empty population
@@ -44,6 +41,7 @@ public class GAPopulation {
 		
 		// make space for the fitness scores
 		fitnessScores = new double[populationSize];
+		bestPerformers = new StringBuilder();
 	}
 
 	/**
@@ -52,7 +50,7 @@ public class GAPopulation {
 	 * @param space
 	 */
 	public void evaluateFitnessForCurrentMember(Toroidal2DPhysics space) {
-		fitnessScores[currentPopulationCounter] = population[currentPopulationCounter].getCurrentScore(); //Use score as temporary fitness evaluation
+		fitnessScores[currentPopulationCounter] = population[currentPopulationCounter].getCurrentScore() + population[currentPopulationCounter].getCurrentGameScore(space) > 0 ? population[currentPopulationCounter].getCurrentScore() + population[currentPopulationCounter].getCurrentGameScore(space) : 0; //Current score will generally be horribly negative. It's calculated as 0-[resources on ship]-[game score when organism starts playing]. This means that by adding the game score at the end of the organisms' turn, we should only get the total amount of score this organism contributed to the score counter (not including resources from the previous organisms carried on board when this organism took over). If the organism either didn't get ANY new resources, or didn't even return to base to drop of the resources still on the ship when it started, then the score is just set to 0 to avoid negative numbers.
 
 	}
 
@@ -81,6 +79,10 @@ public class GAPopulation {
 		return population[currentPopulationCounter % population.length];
 	}
 
+	public int getCurrentPopulationCounter() {
+		return currentPopulationCounter;
+	}
+
 	/**
 	 * Does crossover, selection, and mutation using our current population.
 	 * Crossover: Take 1 of the two parents at random as the 'base parent'. If any states are shared between the base parent and the other parent, randomly decide which of the parents action to distribute. If the state is not the same between the parents, take the base parents action.
@@ -92,26 +94,29 @@ public class GAPopulation {
 		int numRandom = population.length / 4; //Number of randomly selected organisms is 25%
 		//In total this is 50% of the previous generation. We'll mate randomly twice to get the other 50% for the next generation.
 		Random random = new Random();
-		int[] bestPerformersIndex = getBestPerformers(numBest); //Get the indexes of the top 25% best scoring organisms
-
+		ArrayList<Integer> bestPerformersIndex = getBestPerformers(numBest); //Get the indexes of the top 25% best scoring organisms
+		bestPerformers.append(fitnessScores[bestPerformersIndex.get(0)]);
+		bestPerformers.append(", ");
 		GAChromosome[] matingChromosomes = new GAChromosome[numBest + numRandom]; //Make an array to do the mating that's the length of the selected chromosomes
 
 		GAChromosome[] childChromosomes = new GAChromosome[matingChromosomes.length]; //Make an array to hold children
 
-		for(int i = 0; i<bestPerformersIndex.length; i++) //For every best performer.
+		for(int i = 0; i<bestPerformersIndex.size(); i++) //For every best performer.
 		{
-			matingChromosomes[i] = population[bestPerformersIndex[i]]; //Set the mating chromosome equal to the popluation chromosome found at the index specified in the bestPerformers index
+			matingChromosomes[i] = population[bestPerformersIndex.get(i)]; //Set the mating chromosome equal to the popluation chromosome found at the index specified in the bestPerformers index
 		}
 
-		int[] randMem = new int[numRandom]; //To remember what we randomly pick so we don't have repeats
+		ArrayList<Integer> randMem = new ArrayList<>(); //To remember what we randomly pick so we don't have repeats
 		for(int i = numBest; i<numBest+numRandom; i++) //To fill out the REST of the array with random organisms, start from where we added the best and then continue adding
 		{
 			int tempRand = random.nextInt(population.length); //A random index to pull a chromosome from
-			if(!IntStream.of(bestPerformersIndex).anyMatch(x -> x==tempRand) && !IntStream.of(randMem).anyMatch(x -> x==tempRand)) //Lambda function. If the randomly selected number isn't already one of the selected values from either the best organisms or the already selected random organisms
+			while(bestPerformersIndex.contains(tempRand) || randMem.contains(tempRand)) //Keep rerolling number if the randomly selected number is already one of the selected values from either the best organisms or the already selected random organisms
 			{
-				randMem[i-numBest] = tempRand; //Remember what index we pulled (need to subtract numBest to start at 0)
-				matingChromosomes[i] = population[tempRand]; //Add random organism to the mating list.
+				tempRand = random.nextInt(population.length);
 			}
+			randMem.add(i-numBest, tempRand); //Remember what index we pulled (need to subtract numBest to start at 0)
+			matingChromosomes[i] = population[tempRand]; //Add random organism to the mating list.
+
 		}
 		int childCount = 0; //What child we're current creating
 		for(int k = 0; k<2; k++)
@@ -150,17 +155,16 @@ public class GAPopulation {
 					}
 					else
 						childPolicy.put(state, baseParentPolicy.get(state));
-
-					childChromosomes[childCount] = new GAChromosome(childPolicy); //Make a child with the policy.
-					childCount++; //Head to the next one.
 				}
+				childChromosomes[childCount] = new GAChromosome(childPolicy); //Make a child with the policy.
+				childCount++; //Head to the next one.
 			}
 
 		}
 
 		//Now we need to reset our fitness scores and update our populace to be a combination of the parent and children.
-		for(int i =0; i<fitnessScores.length; i++) //iterate through fitness scores
-			fitnessScores[i]=0; //Set to 0
+	//	for(int i =0; i<fitnessScores.length; i++) //iterate through fitness scores
+		//	fitnessScores[i]=0; //Set to 0
 
 		ArrayList<GAChromosome> tempList = new ArrayList<>();
 		tempList.addAll(Arrays.asList(childChromosomes)); //Add children
@@ -171,7 +175,7 @@ public class GAPopulation {
 			population[i] = tempList.get(i); //set population equal to one of the parents/children of our crossover.
 		}
 
-		currentPopulationCounter = 0; //reset populace counter.
+		currentPopulationCounter = -1; //reset populace counter.
 	}
 
 	/**
@@ -185,9 +189,9 @@ public class GAPopulation {
 	/**
 	 * Return the indexes of the n best organisms by score
 	 */
-	public int[] getBestPerformers(int numBest)
+	public ArrayList<Integer> getBestPerformers(int numBest)
 	{
-		int[] bestOrganismsIndex = new int[numBest]; //Indexes of the best scoring organisms, sorted by score.
+		ArrayList<Integer> bestOrganismsIndex = new ArrayList<Integer>(); //Indexes of the best scoring organisms, sorted by score.
 		int numFound = 0; //How many organisms we've already found
 		for(int i = 0; i<numBest; i++)
 		{
@@ -195,8 +199,7 @@ public class GAPopulation {
 			int tempBestIndex = -1;
 			for(int j=0; j<fitnessScores.length; j++)
 			{
-				int finalJ = j; //for lambda expressions since they need a final variable.
-				if(fitnessScores[j] > tempBest && !IntStream.of(bestOrganismsIndex).anyMatch(x -> x== finalJ)) //If the currently looked at fitness is the greatest so far and NOT already accounted for in our list of the best scores
+				if(fitnessScores[j] > tempBest && !bestOrganismsIndex.contains(j)) //If the currently looked at fitness is the greatest so far and NOT already accounted for in our list of the best scores
 				{
 					tempBest = fitnessScores[j]; //Keep track of best score
 					tempBestIndex = j; //Keep track of best index
@@ -204,11 +207,18 @@ public class GAPopulation {
 
 			}
 
-			bestOrganismsIndex[i] = tempBestIndex; //Set the nth best score index to the best scored index discovered above.
+			bestOrganismsIndex.add(tempBestIndex); //Set the nth best score index to the best scored index discovered above.
 
 		}
 		return bestOrganismsIndex;
 	}
+
+	public StringBuilder getBestPerformers() {
+		return bestPerformers;
+	}
+
+
 }
+
 	
 
