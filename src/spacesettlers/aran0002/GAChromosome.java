@@ -20,22 +20,23 @@ import spacesettlers.simulator.Toroidal2DPhysics;
  */
 public class GAChromosome {
 	private HashMap<GAState, GAMoveTo> policy;
-	int currentScore;
+	int scoreInitial;
+	int resourcesInitial;
 	
 	public GAChromosome() {
 		policy = new HashMap<GAState, GAMoveTo>();
-		currentScore = 0;
+		scoreInitial = 0;
+		resourcesInitial = 0;
+
 	}
 
 	public GAChromosome(HashMap<GAState, GAMoveTo> policy)
 	{
 		this.policy = policy;
-		currentScore = 0;
+		scoreInitial = 0;
+		resourcesInitial = 0;
 	}
 
-	public void setCurrentScore(int currentScore) {
-		this.currentScore = currentScore;
-	}
 
 	/**
 	 * Returns either the action currently specified by the policy or randomly selects one if this is a new state
@@ -80,10 +81,20 @@ public class GAChromosome {
 		return -1; //God have mercy upon your soul
 	}
 
-	public void incCurrentScore(int amount) {currentScore += amount;}
+	public int getScoreInitial() {
+		return scoreInitial;
+	}
 
-	public int getCurrentScore(){
-		return currentScore;
+	public int getResourcesInitial() {
+		return resourcesInitial;
+	}
+
+	public void setScoreInitial(int scoreInitial) {
+		this.scoreInitial = scoreInitial;
+	}
+
+	public void setResourcesInitial(int resourcesInitial) {
+		this.resourcesInitial = resourcesInitial;
 	}
 
 	public void setPolicy(HashMap<GAState, GAMoveTo> policy) {

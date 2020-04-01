@@ -50,7 +50,7 @@ public class GAPopulation {
 	 * @param space
 	 */
 	public void evaluateFitnessForCurrentMember(Toroidal2DPhysics space) {
-		fitnessScores[currentPopulationCounter] = population[currentPopulationCounter].getCurrentScore() + population[currentPopulationCounter].getCurrentGameScore(space) > 0 ? population[currentPopulationCounter].getCurrentScore() + population[currentPopulationCounter].getCurrentGameScore(space) : 0; //Current score will generally be horribly negative. It's calculated as 0-[resources on ship]-[game score when organism starts playing]. This means that by adding the game score at the end of the organisms' turn, we should only get the total amount of score this organism contributed to the score counter (not including resources from the previous organisms carried on board when this organism took over). If the organism either didn't get ANY new resources, or didn't even return to base to drop of the resources still on the ship when it started, then the score is just set to 0 to avoid negative numbers.
+		fitnessScores[currentPopulationCounter] = population[currentPopulationCounter].getCurrentGameScore(space) - population[currentPopulationCounter].getResourcesInitial() - population[currentPopulationCounter].getScoreInitial() > 0 ? population[currentPopulationCounter].getCurrentGameScore(space) - population[currentPopulationCounter].getResourcesInitial() - population[currentPopulationCounter].getScoreInitial() : 0; //The the score of our team at the end of the organism's turn. Then remove the score at the start of the organism's turn as well as the resources left on the ship. This gives us the net effect THIS organism had on the game's score, which is its fitness.
 
 	}
 

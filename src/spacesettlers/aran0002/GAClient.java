@@ -128,17 +128,30 @@ public class GAClient extends TeamClient {
 				population.makeNextGeneration();
 
 				currentPolicy = population.getNextMember();
-			}
-			else //We need to subtract what's currently on the ship to make sure this organism isn't getting credit for the work of the previous one. Since the game doesn't actually reset whenever we switch to a new organism
-			{
+				int leftoverShipResources = 0; //resources left on the ships by the previous organism that it never returned to base (unscored)
 				for(AbstractActionableObject object : actionableObjects)
 				{
 					if(object instanceof Ship) //IF a ship
 					{
-						currentPolicy.incCurrentScore(-object.getResources().getTotal()); //Remove from the next ship's score whatever the previous ship still had onboard (we're not giving it credit for someone else's work!)
+						leftoverShipResources += object.getResources().getTotal(); //Add up the left over resources so we don't give the new organism credit for the last one's (unfinished) work.
 					}
 				}
-				currentPolicy.incCurrentScore(-currentPolicy.getCurrentGameScore(space)); //Also remove the score up to this point in game.
+				currentPolicy.setResourcesInitial(leftoverShipResources); //Tell the new organism what resources were left onboard so it doesn't count it in the fitness function.
+				currentPolicy.setScoreInitial(currentPolicy.getCurrentGameScore(space)); //Also inform it of the current game score so we can account for it in our fitness function.
+
+			}
+			else //We need to subtract what's currently on the ship to make sure this organism isn't getting credit for the work of the previous one. Since the game doesn't actually reset whenever we switch to a new organism
+			{
+				int leftoverShipResources = 0; //resources left on the ships by the previous organism that it never returned to base (unscored)
+				for(AbstractActionableObject object : actionableObjects)
+				{
+					if(object instanceof Ship) //IF a ship
+					{
+						leftoverShipResources += object.getResources().getTotal(); //Add up the left over resources so we don't give the new organism credit for the last one's (unfinished) work.
+					}
+				}
+				currentPolicy.setResourcesInitial(leftoverShipResources); //Tell the new organism what resources were left onboard so it doesn't count it in the fitness function.
+				currentPolicy.setScoreInitial(currentPolicy.getCurrentGameScore(space)); //Also inform it of the current game score so we can account for it in our fitness function.
 			}
 			
 		}
