@@ -39,8 +39,8 @@
 			<initialRegionLRY>700</initialRegionLRY>
 		</HighLevelTeamConfig>
 		<HighLevelTeamConfig>
-			<teamName>Myrrh's Team</teamName>
-			<configFile>ga-clientinit.xml</configFile>
+			<teamName>AraniDaroSpacePeepsInc</teamName>
+			<configFile>decisiontree-clientinit.xml</configFile>
 			<initialRegionULX>200</initialRegionULX>
 			<initialRegionULY>200</initialRegionULY>
 			<initialRegionLRX>400</initialRegionLRX>

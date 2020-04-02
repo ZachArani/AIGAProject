@@ -48,9 +48,9 @@
 			<configFile>passive-heuristic-clientinit.xml</configFile>
 		</HighLevelTeamConfig>
 		<HighLevelTeamConfig>
-			<teamName>Myrrh's Team</teamName>
+			<teamName>AraniDaroSpacePeepsInc</teamName>
 			<!-- Pick the one you intend to play against (self versus other) -->
-			<configFile>ga-clientinit.xml</configFile>
+			<configFile>decisiontree-clientinit.xml</configFile>
 		</HighLevelTeamConfig>
 	</teams>
 
@@ -67,6 +67,9 @@
 		</BaseConfig>
 		<BaseConfig>
 			<teamName>HeuristicMinerTeam</teamName>
+		</BaseConfig>
+		<BaseConfig>
+			<teamName>AraniDaroSpacePeepsInc</teamName>
 		</BaseConfig>
 	</bases>
 	

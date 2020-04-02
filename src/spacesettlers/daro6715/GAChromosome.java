@@ -75,7 +75,7 @@ public class GAChromosome {
 	public int getCurrentGameScore(Toroidal2DPhysics space) {
 		for(ImmutableTeamInfo teamInfo : space.getTeamInfo())
 		{
-			if(teamInfo.getTeamName().equals("Myrrh's Team"))
+			if(teamInfo.getTeamName().equals("AraniDaroSpacePeepsInc"))
 				return (int)teamInfo.getScore();
 		}
 		return -1; //God have mercy upon your soul
