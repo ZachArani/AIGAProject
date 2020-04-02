@@ -1,9 +1,9 @@
 <ExampleGAPopulation>
   <population>
-    <spacesettlers.aran0002.GAChromosome>
+    <spacesettlers.daro6715.GAChromosome>
       <policy>
         <entry>
-          <spacesettlers.aran0002.GAState>
+          <spacesettlers.daro6715.GAState>
             <distanceToNearestMineableAsteroid>362.9682018202052</distanceToNearestMineableAsteroid>
             <nearestMineableAsteroid>
               <position>
@@ -61,13 +61,13 @@
             <qualValueShip>4</qualValueShip>
             <qualDistanceBase>1</qualDistanceBase>
             <currentScore>0</currentScore>
-          </spacesettlers.aran0002.GAState>
-          <spacesettlers.aran0002.GAMoveTo>
+          </spacesettlers.daro6715.GAState>
+          <spacesettlers.daro6715.GAMoveTo>
             <moveTo>spacesettlers.objects.Asteroid</moveTo>
-          </spacesettlers.aran0002.GAMoveTo>
+          </spacesettlers.daro6715.GAMoveTo>
         </entry>
         <entry>
-          <spacesettlers.aran0002.GAState>
+          <spacesettlers.daro6715.GAState>
             <distanceToNearestMineableAsteroid>117.63269164560154</distanceToNearestMineableAsteroid>
             <nearestMineableAsteroid>
               <position>
@@ -125,13 +125,13 @@
             <qualValueShip>3</qualValueShip>
             <qualDistanceBase>2</qualDistanceBase>
             <currentScore>0</currentScore>
-          </spacesettlers.aran0002.GAState>
-          <spacesettlers.aran0002.GAMoveTo>
+          </spacesettlers.daro6715.GAState>
+          <spacesettlers.daro6715.GAMoveTo>
             <moveTo>spacesettlers.objects.Asteroid</moveTo>
-          </spacesettlers.aran0002.GAMoveTo>
+          </spacesettlers.daro6715.GAMoveTo>
         </entry>
         <entry>
-          <spacesettlers.aran0002.GAState>
+          <spacesettlers.daro6715.GAState>
             <distanceToNearestMineableAsteroid>364.65150366059197</distanceToNearestMineableAsteroid>
             <nearestMineableAsteroid>
               <position>
@@ -189,13 +189,13 @@
             <qualValueShip>4</qualValueShip>
             <qualDistanceBase>3</qualDistanceBase>
             <currentScore>0</currentScore>
-          </spacesettlers.aran0002.GAState>
-          <spacesettlers.aran0002.GAMoveTo>
+          </spacesettlers.daro6715.GAState>
+          <spacesettlers.daro6715.GAMoveTo>
             <moveTo>spacesettlers.objects.Base</moveTo>
-          </spacesettlers.aran0002.GAMoveTo>
+          </spacesettlers.daro6715.GAMoveTo>
         </entry>
         <entry>
-          <spacesettlers.aran0002.GAState>
+          <spacesettlers.daro6715.GAState>
             <distanceToNearestMineableAsteroid>121.03724459043349</distanceToNearestMineableAsteroid>
             <nearestMineableAsteroid>
               <position>
@@ -253,26 +253,26 @@
             <qualValueShip>4</qualValueShip>
             <qualDistanceBase>1</qualDistanceBase>
             <currentScore>0</currentScore>
-          </spacesettlers.aran0002.GAState>
-          <spacesettlers.aran0002.GAMoveTo>
+          </spacesettlers.daro6715.GAState>
+          <spacesettlers.daro6715.GAMoveTo>
             <moveTo>spacesettlers.objects.Asteroid</moveTo>
-          </spacesettlers.aran0002.GAMoveTo>
+          </spacesettlers.daro6715.GAMoveTo>
         </entry>
       </policy>
       <currentScore>0</currentScore>
-    </spacesettlers.aran0002.GAChromosome>
-    <spacesettlers.aran0002.GAChromosome>
+    </spacesettlers.daro6715.GAChromosome>
+    <spacesettlers.daro6715.GAChromosome>
       <policy/>
       <currentScore>0</currentScore>
-    </spacesettlers.aran0002.GAChromosome>
-    <spacesettlers.aran0002.GAChromosome>
+    </spacesettlers.daro6715.GAChromosome>
+    <spacesettlers.daro6715.GAChromosome>
       <policy/>
       <currentScore>0</currentScore>
-    </spacesettlers.aran0002.GAChromosome>
-    <spacesettlers.aran0002.GAChromosome>
+    </spacesettlers.daro6715.GAChromosome>
+    <spacesettlers.daro6715.GAChromosome>
       <policy/>
       <currentScore>0</currentScore>
-    </spacesettlers.aran0002.GAChromosome>
+    </spacesettlers.daro6715.GAChromosome>
   </population>
   <currentPopulationCounter>1</currentPopulationCounter>
   <fitnessScores>
