@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TeamClientConfig>
 	<!-- The name of the client class (this is used to construct the client so it needs to be the full class name) -->
-	<classname>spacesettlers.aran0002.DecisionClient</classname>
+	<classname>spacesettlers.daro6715.DecisionClient</classname>
 	
 	<!-- You can choose the color your team's ships will be on the screen.  Specify the red, green, and blue components -->
 	<teamColorGreen>55</teamColorGreen>
@@ -14,5 +14,5 @@
 	<numberInitialShipsInTeam>2</numberInitialShipsInTeam>
 	
 	<!-- Optional:  if the agent needs to read in from a file, it can specify the path to it here -->
-	<knowledgeFile>src/spacesettlers/aran0002/decision_knowledge.xml</knowledgeFile>
+	<knowledgeFile>src/spacesettlers/daro6715/decision_knowledge.xml</knowledgeFile>
 </TeamClientConfig>

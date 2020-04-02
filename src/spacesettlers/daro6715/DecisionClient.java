@@ -1,11 +1,10 @@
-package spacesettlers.aran0002;
+package spacesettlers.daro6715;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 

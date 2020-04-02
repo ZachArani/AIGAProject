@@ -14,5 +14,5 @@
 	<numberInitialShipsInTeam>2</numberInitialShipsInTeam>
 	
 	<!-- Optional:  if the agent needs to read in from a file, it can specify the path to it here -->
-	<knowledgeFile>src/spacesettlers/aran0002/ga_knowledge.xml</knowledgeFile>
+	<knowledgeFile>src/spacesettlers/daro6715/ga_knowledge.xml</knowledgeFile>
 </TeamClientConfig>
