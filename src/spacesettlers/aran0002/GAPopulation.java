@@ -2,6 +2,7 @@ package spacesettlers.aran0002;
 
 import spacesettlers.objects.Asteroid;
 import spacesettlers.objects.Base;
+import spacesettlers.objects.Beacon;
 import spacesettlers.simulator.Toroidal2DPhysics;
 
 import java.util.*;
@@ -139,12 +140,15 @@ public class GAPopulation {
 				for(GAState state : baseParentPolicy.keySet())
 				{
 					GAMoveTo action = baseParentPolicy.get(state); //Get the action,
-					if(random.nextInt(20)==19) //If we get 5% chance of mutation, invert the action
+					if(random.nextInt(20)==19) //If we get 5% chance of mutation
 					{
-						if(action.getMoveTo().equals(Base.class)) //If we were going to a base
-							childPolicy.put(state, new GAMoveTo(Asteroid.class)); //Head to an asteroid instead
-						if(action.getMoveTo().equals(Asteroid.class))
-							childPolicy.put(state, new GAMoveTo(Base.class)); //Head to a Base instead.
+						int mutate = random.nextInt(3); //Randomly decide what we do
+						if(mutate==0)
+							childPolicy.put(state, new GAMoveTo(Asteroid.class)); //Head to an asteroid
+						if(mutate==1)
+							childPolicy.put(state, new GAMoveTo(Base.class)); //Head to a Base.
+						if(mutate==2)
+							childPolicy.put(state, new GAMoveTo(Beacon.class)); //Head to a beacon
 					}
 					else if(otherParentPolicy.containsKey(state)) //If other parent also shares the same state
 					{

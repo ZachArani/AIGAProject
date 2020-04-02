@@ -13,9 +13,9 @@ import spacesettlers.objects.Ship;
 import spacesettlers.simulator.Toroidal2DPhysics;
 
 /**
- * An example chromosome for a space settlers agent using genetic algorithms / evolutionary computation
+ * Our chromosome for our GA client using genetic algorithms / evolutionary computation
  * 
- * @author amy
+ * @author (originally) amy. Amended by Zach.
  *
  */
 public class GAChromosome {
