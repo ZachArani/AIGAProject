@@ -142,6 +142,8 @@ public class DecisionClient extends TeamClient {
 
 			int netScore = getCurrentGameScore(space) - scoreTotal;
 			
+			scoreTotal += netScore;
+			
 			System.out.println(netScore);
 
 			//if we did well increase the odds of picking this tree again

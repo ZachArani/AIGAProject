@@ -2,6 +2,7 @@ package spacesettlers.aran0002;
 
 import spacesettlers.objects.Asteroid;
 import spacesettlers.objects.Base;
+import spacesettlers.objects.Beacon;
 import spacesettlers.simulator.Toroidal2DPhysics;
 
 import java.util.*;
@@ -50,7 +51,7 @@ public class GAPopulation {
 	 * @param space
 	 */
 	public void evaluateFitnessForCurrentMember(Toroidal2DPhysics space) {
-		fitnessScores[currentPopulationCounter] = population[currentPopulationCounter].getCurrentScore() + population[currentPopulationCounter].getCurrentGameScore(space) > 0 ? population[currentPopulationCounter].getCurrentScore() + population[currentPopulationCounter].getCurrentGameScore(space) : 0; //Current score will generally be horribly negative. It's calculated as 0-[resources on ship]-[game score when organism starts playing]. This means that by adding the game score at the end of the organisms' turn, we should only get the total amount of score this organism contributed to the score counter (not including resources from the previous organisms carried on board when this organism took over). If the organism either didn't get ANY new resources, or didn't even return to base to drop of the resources still on the ship when it started, then the score is just set to 0 to avoid negative numbers.
+		fitnessScores[currentPopulationCounter] = population[currentPopulationCounter].getCurrentGameScore(space) - population[currentPopulationCounter].getResourcesInitial() - population[currentPopulationCounter].getScoreInitial() > 0 ? population[currentPopulationCounter].getCurrentGameScore(space) - population[currentPopulationCounter].getResourcesInitial() - population[currentPopulationCounter].getScoreInitial() : 0; //The the score of our team at the end of the organism's turn. Then remove the score at the start of the organism's turn as well as the resources left on the ship. This gives us the net effect THIS organism had on the game's score, which is its fitness.
 
 	}
 
@@ -139,12 +140,15 @@ public class GAPopulation {
 				for(GAState state : baseParentPolicy.keySet())
 				{
 					GAMoveTo action = baseParentPolicy.get(state); //Get the action,
-					if(random.nextInt(20)==19) //If we get 5% chance of mutation, invert the action
+					if(random.nextInt(20)==19) //If we get 5% chance of mutation
 					{
-						if(action.getMoveTo().equals(Base.class)) //If we were going to a base
-							childPolicy.put(state, new GAMoveTo(Asteroid.class)); //Head to an asteroid instead
-						if(action.getMoveTo().equals(Asteroid.class))
-							childPolicy.put(state, new GAMoveTo(Base.class)); //Head to a Base instead.
+						int mutate = random.nextInt(3); //Randomly decide what we do
+						if(mutate==0)
+							childPolicy.put(state, new GAMoveTo(Asteroid.class)); //Head to an asteroid
+						if(mutate==1)
+							childPolicy.put(state, new GAMoveTo(Base.class)); //Head to a Base.
+						if(mutate==2)
+							childPolicy.put(state, new GAMoveTo(Beacon.class)); //Head to a beacon
 					}
 					else if(otherParentPolicy.containsKey(state)) //If other parent also shares the same state
 					{
